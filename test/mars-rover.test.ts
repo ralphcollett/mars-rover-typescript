@@ -53,3 +53,11 @@ test('throws error for unrecognised direction', () => {
       ""
   )).toThrow("Unrecognised direction: X");
 });
+
+test('throws error for unrecognised action', () => {
+  expect(() => marsRover(
+      "5 5\n" +
+      "1 2 N\n" +
+      "LLLX"
+  )).toThrow("Unrecognised action: X");
+});

@@ -34,12 +34,11 @@ export const marsRover = (input: string): string => {
     for (const robotAction of robotActions) {
         if (robotAction === "R") {
             robotDirection = rightOf[robotDirection];
-        }
-        if (robotAction === "L") {
+        } else if (robotAction === "L") {
             robotDirection = leftOf[robotDirection];
+        } else {
+            throw new Error(`Unrecognised action: ${robotAction}`)
         }
     }
-
-
     return `1 2 ${robotDirection}`;
 };
