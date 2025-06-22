@@ -29,14 +29,17 @@ const leftOf: Record<Direction, Direction> = {
 export const marsRover = (input: string): string => {
     const inputLines = input.split("\n");
     const robotStartDirection: Direction = toDirection(inputLines[1].split(" ")[2]);
-    const robotActions = inputLines[2];
-    let robotFinishDirection: Direction = robotStartDirection;
-    if (robotActions === "R") {
-        robotFinishDirection = rightOf[robotStartDirection];
-    }
-    if (robotActions === "L") {
-        robotFinishDirection = leftOf[robotStartDirection];
+    const robotActions = inputLines[2].split('');
+    let robotDirection: Direction = robotStartDirection;
+    for (const robotAction of robotActions) {
+        if (robotAction === "R") {
+            robotDirection = rightOf[robotDirection];
+        }
+        if (robotAction === "L") {
+            robotDirection = leftOf[robotDirection];
+        }
     }
 
-    return `1 2 ${robotFinishDirection}`;
+
+    return `1 2 ${robotDirection}`;
 };

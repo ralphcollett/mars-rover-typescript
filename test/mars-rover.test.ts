@@ -34,6 +34,18 @@ test.each([
   )).toBe(`1 2 ${endDir}`);
 });
 
+test.each([
+  ["N", "LR", "N"],
+  ["E", "LLL", "S"],
+  ["S", "RRRL", "N"],
+])('can move rotate multiple times starting %s rotating %s ends %s', (startDir, rotations, endDir) => {
+  expect(marsRover(
+      `5 5\n` +
+      `1 2 ${startDir}\n` +
+      rotations
+  )).toBe(`1 2 ${endDir}`);
+});
+
 test('throws error for unrecognised direction', () => {
   expect(() => marsRover(
       "5 5\n" +
