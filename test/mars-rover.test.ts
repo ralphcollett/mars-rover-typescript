@@ -1,10 +1,29 @@
-type Direction = "N" | "E" | "S" | "W";
-
 const toDirection = (input: string): Direction => {
-  if (input === "N" || input === "E" || input === "S" || input === "W") {
-    return input;
+  if (Object.values(Direction).includes(input as Direction)) {
+    return input as Direction;
   }
   throw new Error(`Unrecognised direction: ${input}`);
+};
+
+enum Direction {
+  N = "N",
+  E = "E",
+  S = "S",
+  W = "W",
+}
+
+const rightOf: Record<Direction, Direction> = {
+  [Direction.N]: Direction.E,
+  [Direction.E]: Direction.S,
+  [Direction.S]: Direction.W,
+  [Direction.W]: Direction.N,
+};
+
+const leftOf: Record<Direction, Direction> = {
+  [Direction.N]: Direction.W,
+  [Direction.E]: Direction.N,
+  [Direction.S]: Direction.E,
+  [Direction.W]: Direction.S,
 };
 
 const marsRover = (input: string): string => {
@@ -13,16 +32,10 @@ const marsRover = (input: string): string => {
   const robotActions = inputLines[2];
   let robotFinishDirection: Direction = robotStartDirection;
   if (robotActions === "R") {
-    if (robotStartDirection === "N") robotFinishDirection = "E";
-    else if (robotStartDirection === "E") robotFinishDirection = "S";
-    else if (robotStartDirection === "S") robotFinishDirection = "W";
-    else if (robotStartDirection === "W") robotFinishDirection = "N";
+    robotFinishDirection = rightOf[robotStartDirection];
   }
   if (robotActions === "L") {
-    if (robotStartDirection === "N") robotFinishDirection = "W";
-    else if (robotStartDirection === "E") robotFinishDirection = "N";
-    else if (robotStartDirection === "S") robotFinishDirection = "E";
-    else if (robotStartDirection === "W") robotFinishDirection = "S";
+    robotFinishDirection = leftOf[robotStartDirection];
   }
 
   return `1 2 ${robotFinishDirection}`;
