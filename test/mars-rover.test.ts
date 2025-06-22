@@ -1,8 +1,17 @@
+type Direction = "N" | "E" | "S" | "W";
+
+const toDirection = (input: string): Direction => {
+  if (input === "N" || input === "E" || input === "S" || input === "W") {
+    return input;
+  }
+  throw new Error(`Unrecognised direction: ${input}`);
+};
+
 const marsRover = (input: string): string => {
   const inputLines = input.split("\n");
-  const robotStartDirection = inputLines[1].split(" ")[2];
+  const robotStartDirection: Direction = toDirection(inputLines[1].split(" ")[2]);
   const robotActions = inputLines[2];
-  let robotFinishDirection = robotStartDirection;
+  let robotFinishDirection: Direction = robotStartDirection;
   if (robotActions === "R") {
     if (robotStartDirection === "N") robotFinishDirection = "E";
     else if (robotStartDirection === "E") robotFinishDirection = "S";
@@ -51,4 +60,12 @@ test.each([
       `1 2 ${startDir}\n` +
       "L"
   )).toBe(`1 2 ${endDir}`);
+});
+
+test('throws error for unrecognised direction', () => {
+  expect(() => marsRover(
+      "5 5\n" +
+      "1 2 X\n" +
+      ""
+  )).toThrow("Unrecognised direction: X");
 });
