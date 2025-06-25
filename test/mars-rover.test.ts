@@ -46,6 +46,14 @@ test.each([
   )).toBe(`1 2 ${endDir}`);
 });
 
+test('can move forward when facing North', () => {
+    expect(marsRover(
+        "5 5\n" +
+        "1 2 N\n" +
+        "M"
+    )).toBe("1 3 N");
+});
+
 test('throws error for unrecognised direction', () => {
   expect(() => marsRover(
       "5 5\n" +
