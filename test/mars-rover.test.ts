@@ -75,7 +75,6 @@ test('throws error for unrecognised action', () => {
   )).toThrow("Unrecognised action: X");
 });
 
-
 test.each([
     ["N", "3 5"],
     ["E", "5 2"],
