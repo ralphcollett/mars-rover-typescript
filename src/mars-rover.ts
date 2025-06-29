@@ -26,12 +26,20 @@ const leftOf: Record<Direction, Direction> = {
     [Direction.W]: Direction.S,
 };
 
+const move: Record<Direction, (x: number, y: number) => [number, number]> = {
+    [Direction.N]: (x, y) => [x, y + 1],
+    [Direction.E]: (x, y) => [x + 1, y],
+    [Direction.S]: (x, y) => [x, y - 1],
+    [Direction.W]: (x, y) => [x - 1, y],
+};
+
 export const marsRover = (input: string): string => {
     const inputLines = input.split("\n");
     const [startX, startY] = inputLines[1].split(' ').map(Number);
     const robotStartDirection: Direction = toDirection(inputLines[1].split(" ")[2]);
     const robotActions = inputLines[2].split('');
     let robotDirection: Direction = robotStartDirection;
+    let x = startX;
     let y = startY;
     for (const robotAction of robotActions) {
         if (robotAction === "R") {
@@ -39,10 +47,10 @@ export const marsRover = (input: string): string => {
         } else if (robotAction === "L") {
             robotDirection = leftOf[robotDirection];
         } else if (robotAction === "M") {
-            y += 1;
+            [x, y] = move[robotDirection](x, y)
         } else {
             throw new Error(`Unrecognised action: ${robotAction}`)
         }
     }
-    return `1 ${y} ${robotDirection}`;
+    return `${x} ${y} ${robotDirection}`;
 };

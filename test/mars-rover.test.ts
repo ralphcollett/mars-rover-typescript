@@ -46,12 +46,17 @@ test.each([
   )).toBe(`1 2 ${endDir}`);
 });
 
-test('can move forward when facing North', () => {
+test.each([
+    ["N", "2 3"],
+    ["E", "3 2"],
+    ["S", "2 1"],
+    ["W", "1 2"]
+])('can move forward when facing %s', (startDir, endCoordinates) => {
     expect(marsRover(
         "5 5\n" +
-        "1 2 N\n" +
+        `2 2 ${startDir}\n` +
         "M"
-    )).toBe("1 3 N");
+    )).toBe(`${endCoordinates} ${startDir}`);
 });
 
 test('throws error for unrecognised direction', () => {
