@@ -100,3 +100,23 @@ test.each([
         "M"
     )).toThrow(`At edge of the grid cannot move ${direction}`);
 });
+
+test('throws error if grid size line is missing', () => {
+    expect(() => marsRover("")).toThrow("Missing grid size line");
+});
+
+test('throws error if position line is missing', () => {
+    expect(() => marsRover("5 5")).toThrow("Missing direction from starting position");
+});
+
+test('throws error if direction is missing', () => {
+    expect(() => marsRover("5 5\n1 2\nM")).toThrow("Unrecognised direction: undefined");
+});
+
+test('throws error if coordinates are not numbers', () => {
+    expect(() => marsRover("5 5\nA B N\nM")).toThrow("Unrecognised direction: N");
+});
+
+test('throws error if action line is missing', () => {
+    expect(() => marsRover("5 5\n1 2 N")).toThrow("Missing action line");
+});

@@ -2,7 +2,7 @@ const toDirection = (input: string): Direction => {
     if (Object.values(Direction).includes(input as Direction)) {
         return input as Direction;
     }
-    throw new Error(`Unrecognised direction: ${input}`);
+    throw new SyntaxError(`Unrecognised direction: ${input}`);
 };
 
 enum Direction {
@@ -64,8 +64,6 @@ class NorthFacingMarsRover extends MarsRover {
         return new EastFacingMarsRover(this.x, this.y, this.rightEdge, this.upperEdge);
     }
 }
-
-
 
 class EastFacingMarsRover extends MarsRover {
 
@@ -133,28 +131,48 @@ const toMarsRover: Record<Direction, (x: number, y: number, rightEdge: number, u
 
 export const marsRover = (input: string): string => {
     const inputLines = input.split("\n");
-    const [rightEdge, upperEdge] = inputLines[0].split(' ').map(Number);
+    const gridSizeLine = inputLines[0];
+    if (!gridSizeLine || gridSizeLine.trim() === "") {
+        throw new SyntaxError("Missing grid size line");
+    }
+    const [rightEdge, upperEdge] = gridSizeLine.split(' ').map(Number);
 
     const [, ...inputLinesWithoutEdges] = inputLines;
+    if (inputLinesWithoutEdges.length === 0 || inputLinesWithoutEdges[0].trim() === "") {
+        throw new SyntaxError("Missing direction from starting position");
+    }
     let outputPositions: string[] = [];
     for (let i = 0; i < inputLinesWithoutEdges.length; i += 2) {
         const positionLine = inputLinesWithoutEdges[i];
-        const [x, y] = positionLine.split(' ').map(Number);
-        const robotStartDirection: Direction = toDirection(positionLine.split(" ")[2]);
-        let marsRover = toMarsRover[robotStartDirection](x, y, rightEdge, upperEdge)
-        const robotActions = inputLinesWithoutEdges[i + 1].split('');
+        if (!positionLine || positionLine.trim() === "") {
+            throw new SyntaxError("Missing direction from starting position");
+        }
+        const [x, y, direction] = positionLine.split(' ');
+        if (direction === undefined) {
+            throw new SyntaxError("Unrecognised direction: undefined");
+        }
+        if (isNaN(Number(x)) || isNaN(Number(y))) {
+            throw new SyntaxError(`Unrecognised direction: ${direction}`);
+        }
+        const robotStartDirection: Direction = toDirection(direction);
+        let marsRover = toMarsRover[robotStartDirection](Number(x), Number(y), rightEdge, upperEdge);
+        const robotActionsLine = inputLinesWithoutEdges[i + 1];
+        if (robotActionsLine === undefined) {
+            throw new SyntaxError("Missing action line");
+        }
+        const robotActions = robotActionsLine.split('');
         for (const robotAction of robotActions) {
             if (robotAction === "R") {
                 marsRover = marsRover.turnRight();
             } else if (robotAction === "L") {
-                marsRover = marsRover.turnLeft()
+                marsRover = marsRover.turnLeft();
             } else if (robotAction === "M") {
                 marsRover = marsRover.move();
-            } else {
-                throw new Error(`Unrecognised action: ${robotAction}`)
+            } else if (robotAction !== "") {
+                throw new SyntaxError(`Unrecognised action: ${robotAction}`);
             }
         }
         outputPositions.push(marsRover.positionAsString());
     }
-    return outputPositions.join("\n")
+    return outputPositions.join("\n");
 };
