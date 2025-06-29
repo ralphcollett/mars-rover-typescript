@@ -35,6 +35,7 @@ const move: Record<Direction, (x: number, y: number) => [number, number]> = {
 
 export const marsRover = (input: string): string => {
     const inputLines = input.split("\n");
+    const [rightEdge, upperEdge] = inputLines[1].split(' ').map(Number);
     const [startX, startY] = inputLines[1].split(' ').map(Number);
     const robotStartDirection: Direction = toDirection(inputLines[1].split(" ")[2]);
     const robotActions = inputLines[2].split('');
@@ -50,6 +51,9 @@ export const marsRover = (input: string): string => {
             [x, y] = move[robotDirection](x, y)
         } else {
             throw new Error(`Unrecognised action: ${robotAction}`)
+        }
+        if (x < 0 || x > rightEdge || y < 0 || y > upperEdge) {
+            throw new Error(`At edge of the grid cannot move ${robotDirection}`)
         }
     }
     return `${x} ${y} ${robotDirection}`;

@@ -74,3 +74,17 @@ test('throws error for unrecognised action', () => {
       "LLLX"
   )).toThrow("Unrecognised action: X");
 });
+
+
+test.each([
+    ["N", "3 5"],
+    ["E", "5 2"],
+    ["S", "2 0"],
+    ["W", "0 1"]
+])('throws error when move out of Mars facing %s', (direction, startingCoordinates) => {
+    expect(() => marsRover(
+        "5 5\n" +
+        `${startingCoordinates} ${direction}\n` +
+        "M"
+    )).toThrow(`At edge of the grid cannot move ${direction}`);
+});
