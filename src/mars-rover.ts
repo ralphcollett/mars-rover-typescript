@@ -12,27 +12,6 @@ enum Direction {
     W = "W",
 }
 
-const rightOf: Record<Direction, Direction> = {
-    [Direction.N]: Direction.E,
-    [Direction.E]: Direction.S,
-    [Direction.S]: Direction.W,
-    [Direction.W]: Direction.N,
-};
-
-const leftOf: Record<Direction, Direction> = {
-    [Direction.N]: Direction.W,
-    [Direction.E]: Direction.N,
-    [Direction.S]: Direction.E,
-    [Direction.W]: Direction.S,
-};
-
-const move: Record<Direction, (x: number, y: number) => [number, number]> = {
-    [Direction.N]: (x, y) => [x, y + 1],
-    [Direction.E]: (x, y) => [x + 1, y],
-    [Direction.S]: (x, y) => [x, y - 1],
-    [Direction.W]: (x, y) => [x - 1, y],
-};
-
 abstract class MarsRover {
     x: number;
     y: number;
@@ -40,7 +19,7 @@ abstract class MarsRover {
     upperEdge: number;
     direction: Direction;
 
-    constructor(x: number, y: number, rightEdge: number, upperEdge: number, direction: Direction) {
+    protected constructor(x: number, y: number, rightEdge: number, upperEdge: number, direction: Direction) {
         this.x = x;
         this.y = y;
         this.rightEdge = rightEdge;
@@ -155,22 +134,27 @@ const toMarsRover: Record<Direction, (x: number, y: number, rightEdge: number, u
 export const marsRover = (input: string): string => {
     const inputLines = input.split("\n");
     const [rightEdge, upperEdge] = inputLines[0].split(' ').map(Number);
-    const [startX, startY] = inputLines[1].split(' ').map(Number);
-    const robotStartDirection: Direction = toDirection(inputLines[1].split(" ")[2]);
 
-    let marsRover = toMarsRover[robotStartDirection](startX, startY, rightEdge, upperEdge)
-
-    const robotActions = inputLines[2].split('');
-    for (const robotAction of robotActions) {
-        if (robotAction === "R") {
-            marsRover = marsRover.turnRight();
-        } else if (robotAction === "L") {
-            marsRover = marsRover.turnLeft()
-        } else if (robotAction === "M") {
-            marsRover = marsRover.move();
-        } else {
-            throw new Error(`Unrecognised action: ${robotAction}`)
+    const [, ...inputLinesWithoutEdges] = inputLines;
+    let outputPositions: string[] = [];
+    for (let i = 0; i < inputLinesWithoutEdges.length; i += 2) {
+        const positionLine = inputLinesWithoutEdges[i];
+        const [x, y] = positionLine.split(' ').map(Number);
+        const robotStartDirection: Direction = toDirection(positionLine.split(" ")[2]);
+        let marsRover = toMarsRover[robotStartDirection](x, y, rightEdge, upperEdge)
+        const robotActions = inputLinesWithoutEdges[i + 1].split('');
+        for (const robotAction of robotActions) {
+            if (robotAction === "R") {
+                marsRover = marsRover.turnRight();
+            } else if (robotAction === "L") {
+                marsRover = marsRover.turnLeft()
+            } else if (robotAction === "M") {
+                marsRover = marsRover.move();
+            } else {
+                throw new Error(`Unrecognised action: ${robotAction}`)
+            }
         }
+        outputPositions.push(marsRover.positionAsString());
     }
-    return marsRover.positionAsString();
+    return outputPositions.join("\n")
 };

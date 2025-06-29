@@ -1,5 +1,18 @@
 import {marsRover} from "../src/mars-rover";
 
+test('Multiple Mars Rovers Acceptance Test', () => {
+    expect(marsRover(
+        "5 5\n" +
+        "1 2 N\n" +
+        "LMLMLMLMM\n" +
+        "3 3 E\n" +
+        "MMRMMRMRRM"
+    )).toBe(
+        "1 3 N\n" +
+        "5 1 E"
+    );
+});
+
 test('no actions means robot stays in starting position', () => {
   expect(marsRover(
       "5 5\n" +
